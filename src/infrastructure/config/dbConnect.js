@@ -14,7 +14,7 @@ async function dbConnect() {
     try {
         mongoose.connect(url, {});
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 
     return mongoose.connection;

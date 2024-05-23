@@ -3,4 +3,5 @@ interface User {
     name: String;
     username: String;
     password: String;
+    work: String;
 }

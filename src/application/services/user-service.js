@@ -1,8 +1,18 @@
 import UserRepository from '../../infrastructure/repositories/user/user-repository.js';
 
 const getAllUsers = async (req, res) => {
-    const users = await UserRepository.getAll(req, res);
-    res.status(200).json(users);
+    const response = await UserRepository.getAll(req, res);
+
+    console.log(response);
+
+    if (response.length > 0) {
+        res.status(200).json(response);
+    } else {
+        res.status(204).json({
+            message: response,
+            data: []
+        });
+    }
 }
 
 const getUserById = async (req, res) => {

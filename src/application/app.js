@@ -1,6 +1,7 @@
-import express from "express"
-import dbConnect from './infrastructure/config/dbConnect.js';
-import routes from './application/index.js';
+import express from "express";
+import dbConnect from "../infrastructure/config/dbConnect.js";
+import routes from "./index.js";
+import exceptionManager from "./middlewares/exception-manager.js";
 
 const connectionDB = await dbConnect();
 connectionDB.on("error", (err) => {
@@ -13,5 +14,7 @@ connectionDB.once("open", () => {
 
 const app = express();
 routes(app);
+
+app.use(exceptionManager);
 
 export default app;
