@@ -1,0 +1,28 @@
+{
+    "name": "Usuario 01",
+    "username": "user-01",
+    "password": "123456",
+    "work": "dev",
+    "phone": 11912345678,
+    "languages": [
+        {
+            "name": "C",
+            "image": "c.jpg",
+            "startDateUse": "2014-08-01"
+        },
+        {
+            "name": "Java",
+            "image": "java.jpg",
+            "startDateUse": "2015-03-01"
+        }
+    ]
+}
+
+{
+    "language": {
+        "name": "C#",
+        "image": "csharp.jpg",
+        "startDateUse": "2018-04-13"
+    },
+    "user": "666341c46f40c22672fd8033"
+}

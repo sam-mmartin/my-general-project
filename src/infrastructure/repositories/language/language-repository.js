@@ -11,6 +11,17 @@ class LanguageRepository {
         return findLanguage;
     }
 
+    static async getByUserId(userId) {
+        const langs = await language.find({user: userId});
+        return langs;
+    }
+
+    static async getByName(name) {
+        const search = { name: { $regex: name, $options: "i" }};
+        const lang = await language.find(search);
+        return lang;
+    }
+
     static async create(newLanguage) {
         const languageCreated = await language.create(newLanguage);
         return languageCreated;

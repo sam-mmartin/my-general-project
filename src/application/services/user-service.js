@@ -1,6 +1,7 @@
-import UserRepository from "../../infrastructure/repositories/user/user-repository.js";
-import UserLanguageRepository from "../../infrastructure/repositories/many-to-many/user-language-repository.js";
-import LanguageRepository from "../../infrastructure/repositories/language/language-repository.js";
+import {
+    LanguageRepository,
+    UserRepository
+} from "../../infrastructure/repositories/index.js";
 import ResourceNotFoundError from "../exceptions/not-found-exception.js";
 
 const getAllUsers = async (req, res) => {
@@ -18,12 +19,18 @@ const getAllUsers = async (req, res) => {
 
 const getUserById = async (req, res, next) => {
     try {
-        const userFinded = await UserRepository.getById(req.params.id);
+        const user = await UserRepository.getById(req.params.id);
 
-        if (userFinded !== null) {
-            const languagesUser = await UserLanguageRepository.getLanguagesByUser(userFinded);
-            const onlyLangs = languagesUser.map(item => item.language);
-            const userResponse = {...userFinded._doc, languages: onlyLangs};
+        if (user !== null) {
+            const languagesUser = await LanguageRepository.getByUserId(user._id);
+            const onlyLangs = languagesUser.map(item => {
+                return {
+                    name: item.name,
+                    image: item.image,
+                    startDateUse: item.startDateUse
+                };
+            });
+            const userResponse = {...user._doc, languages: onlyLangs};
 
             const response = {
                 message: "",
@@ -77,23 +84,19 @@ const createNewUser = async (req, res, next) => {
     try {
         const newUser = req.body;
         const languages = newUser.languages;
-        const userInfos = {
-            name: newUser.name,
-            username: newUser.username,
-            password: newUser.password,
-            work: newUser.work,
-            phone: newUser.phone
-        };
-        const userCreated = await UserRepository.create(userInfos);
+        const user = await save(newUser);
+        const langsDocs = [];
 
         for(var x in languages) {
-            const langCreated = await LanguageRepository.create(languages[x]);
-            const userLang = { user: userCreated, language: langCreated };
-            await UserLanguageRepository.create(userLang);
+            const newLang = {
+                ...languages[x],
+                user: user._id
+            };
+            const langCreated = await LanguageRepository.create(newLang);
+            langsDocs.push(langCreated);
         }
 
-        const languagesUser = await UserLanguageRepository.getLanguagesByUser(userCreated);
-        const userResponse = {...userCreated._doc, languages: languagesUser.map(item => item.language)};
+        const userResponse = {...user._doc, languages: langsDocs};
 
         const response = {
             message: "Novo usuário cadastrado.",
@@ -104,6 +107,18 @@ const createNewUser = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
+};
+
+const save = async (user) => {
+    const newUser = {
+        name: user.name,
+        username: user.username,
+        password: user.password,
+        work: user.work,
+        phone: user.phone
+    };
+    const userCreated = await UserRepository.create(newUser);
+    return userCreated;
 };
 
 const updateUser = async (req, res) => {
