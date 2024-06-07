@@ -2,8 +2,6 @@ import LanguageRepository from "../../infrastructure/repositories/language/langu
 
 const findAll = async (req, res, next) => {
     try {
-        throw new Error();
-
         const response = await LanguageRepository.getAll(req, res);
 
         if (response.length > 0) {

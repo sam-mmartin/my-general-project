@@ -1,28 +1,25 @@
-import mongodb from 'mongodb';
-import { user } from "../../../domain/user/user.js"
+import mongodb from "mongodb";
+import { user } from "../../../domain/index.js";
 
 class UserRepository {
     static async getAll() {
-        const allUsers = await user.find()
+        const allUsers = await user.find();
         return allUsers;
     }
 
     static async getById(id) {
-        try {
-            const findUser = await user.findById(id);
-            return findUser
-        } catch (error) {
-            return `${error.message} - Erro na solicitação.`;
-        }
+        const findUser = await user.findById(id);
+        return findUser;
+    }
+
+    static async getByFilter(parameters) {
+        const findUser = await user.find(parameters);
+        return findUser;
     }
 
     static async create(newUser) {
-        try {
-            const userCreated = await user.create(newUser);
-            return userCreated;
-        } catch (error) {
-            return `${error.message} - Não foi possível cadastrar o usuário.`;
-        }
+        const userCreated = await user.create(newUser);
+        return userCreated;
     }
 
     static async update(id, userData) {

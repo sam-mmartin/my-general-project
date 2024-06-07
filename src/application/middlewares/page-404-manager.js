@@ -1,5 +1,8 @@
+import ResourceNotFoundError from "../exceptions/not-found-exception.js";
+
 function page404Manager(req, res, next) {
-    res.status(404).json({ message: "Página não encontrada" });
+    const error = new ResourceNotFoundError("Página não encontrada");
+    next(error);
 }
 
 export default page404Manager;

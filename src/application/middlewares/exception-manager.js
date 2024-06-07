@@ -1,10 +1,17 @@
 import mongoose from "mongoose";
-import ErrorDefault from "../exceptions/base-exception";
+import ErrorDefault from "../exceptions/base-exception.js";
+import RequestError from "../exceptions/request-exception.js";
+import ResourceNotFoundError from "../exceptions/not-found-exception.js";
+import ValidationError from "../exceptions/validation-exception.js";
 
 // eslint-disable-next-line no-unused-vars
 const exceptionManager = (error, req, res, next) => {
     if (error instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: error.message });
+        new RequestError().sendResponse(res);
+    } else if (error instanceof mongoose.Error.ValidationError) {
+        new ValidationError(error).sendResponse(res);
+    } else if (error instanceof ResourceNotFoundError) {
+        error.sendResponse(res);
     } else {
         new ErrorDefault().sendResponse(res);
     }
